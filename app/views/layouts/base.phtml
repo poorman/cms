@@ -1,0 +1,67 @@
+<?php
+/* * Package CMS
+ * Syntax Phalcon 2.0
+ * Owner: system-work.com
+ * Author: Sebastian Rzeszowicz
+ * Date: 5/5/2015
+ *
+ * Segment: View
+ * Object: Layout
+ * Elements: Base
+*/
+?>
+<!doctype html>
+<html lang = "en">
+
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<?php
+	// Title
+	echo $this->tag->getTitle(); ?>
+	
+	<?php
+	// Css styles
+	echo $this->assets->outputCss( 'style' ); ?>
+	<link rel="stylesheet" type="text/css" href="/third-party/bootstrap.js/css/bootstrap.min.css">
+	
+	<?php
+	// Scripts
+	echo $this->assets->outputJs( 'script' ); ?>
+</head>
+
+<body>
+
+<?php // Top menu  ?>
+	<nav class="navbar navbar-default navbar-inverse" role="navigation">
+		<div class="container-fluid">
+			<div class="navbar-header">
+				<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+					<span class="sr-only">Toggle navigation</span>
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+				</button>
+				<a class="navbar-brand" href="#"><?php echo LABEL_BRAND; ?></a>
+			</div>
+
+			<?php 
+			// Generate menu
+			echo $this->menus->getMenu(); ?>
+
+		</div>
+	</nav>
+<?php // Page content ?>
+	<div class="container">
+		
+<?php
+	echo $this->flash->output();
+	echo $this->getContent();
+?>
+
+		<footer>
+			<p>&copy; <?php echo LABEL_APP_COPYRIGHT;?></p>
+		</footer>
+	</div> <!-- /container -->
+</body>
+</html>
