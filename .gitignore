@@ -1,2 +1,4 @@
 /cache/
 /config/development/
+/public/cache/
+/public/.gitignore
