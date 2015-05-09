@@ -1,0 +1,60 @@
+<?php
+/**
+ * Package CMS
+ * Syntax Phalcon 2.0
+ * Owner: system-work.com
+ * Author: Sebastian Rzeszowicz * Date: 5/5/2015
+ *
+ * Segment: View
+ * Object: Users
+ * Elements: New
+*/
+
+// view styles
+echo $this->assets->outputCss( 'userFormCss' );
+
+// Pager?>
+<ul class="pager">
+	<li class="previous pull-left">
+		<a href="/user/index" >&larr; <?php echo LABEL_USER_LIST; ?></a></li>
+</ul>
+<?php
+// New User form
+// User role
+// Full name
+// Email address
+// Username
+// Password
+// Repeat Password
+// Activation checkbox
+?>
+<form action="/user/save" role="form" method="post" class="form-login">
+	
+    <h2 class="form-login-heading"><?php echo LABEL_NEW_USER_FORM; ?></h2>
+	
+	<?php if ( $role > ROLE_ADMIN ) { 
+	// Users with higher than admin perissions can assign account to user
+	?>
+	<p><label for="account" ><?php echo LABEL_ACCOUNT; ?>: </label><?php echo $form->render("account_id") ?></p>
+	<?php } 
+	else {
+		// Otherwise users parent account is applied
+		echo $form->render("account_id");
+	}
+	?>
+	<p><label for="role" ><?php echo LABEL_GROUP; ?>: </label><?php echo $form->render("userRole") ?></p>
+	
+	<fieldset>
+		<?php echo $form->render("name");?>
+		<?php echo $form->render("email");?>
+		<?php echo $form->render("username");?>
+		<?php echo $form->render("password");?>
+		<?php echo $form->render("repeatPassword");?>
+		<?php echo $form->render( "parent_id", [ 'value' => $parent_id ] );?>
+		<div class="checkbox">
+			<label><input type="checkbox" id="is_active" name="is_active" value="1"> <?php echo LABEL_ACTIVE_USER; ?></label>
+		</div>
+	</fieldset>
+	<br />
+	<button class="btn btn-lg btn-primary btn-block" type="submit"><?php echo LABEL_SAVE; ?></button>
+</form>

@@ -1,0 +1,81 @@
+<?php
+/**
+ * Package CMS
+ * Syntax Phalcon 2.0
+ * Owner: system-work.com
+ * Author: Sebastian Rzeszowicz * Date: 5/5/2015
+ *
+ * Segment: View
+ * Object: Users
+ * Elements: edit
+*/
+
+// view styles
+echo $this->assets->outputCss( 'userFormCss' );
+
+// Pager ?>
+<ul class="pager">
+	<li class="previous pull-left">
+		<a href="/user/index" >&larr; <?php echo LABEL_USER_LIST; ?></a>
+	</li>
+</ul>
+
+<?php
+// User edit form
+// User role
+// Full name
+// Email address
+// Username
+// Activation checkbox
+?>
+<form action="/user/save/<?php echo $user->id;?>" role="form" method="post" class="form-login">
+
+<?php // variable title depending wheter owned or foreign account edited ?>
+	<h2 class="form-login-heading"><?php echo ( $id == $user->id ) ? LABEL_MY_SETTINGS : LABEL_USER_SETTINGS;?></h2>
+<?php if ( $role > ROLE_ADMIN ) { 
+	// Users with higher than admin perissions can assign account to user
+	?>
+	<p>
+		<label for="account_id" ><?PHP echo LABEL_ACCOUNT; ?>: </label>
+<?php 
+	echo str_replace( 'value="' . $user->account_id. '"','selected="selected" value="' . $user->account_id. '"',str_replace( '','selected="selected"',$form->render( "account_id" ) ) )?>
+	<?php } 
+	else {
+		// Otherwise users parent account is applied
+		echo $form->render("account_id");
+	}
+	?>
+<?php
+// Only users with higher permissions or parent user can edit group
+if ( $access[ $role ] > $user->role || $id == $user->parent_id ) { ?>
+	<label for="role" ><?php echo LABEL_GROUP; ?>: </label><?php echo str_replace( 'value="' . $user->role. '"','selected="selected" value="' . $user->role. '"',str_replace( '','selected="selected"',$form->render( "userRole" ) ) )?></p>
+<?php } ?>
+
+	<fieldset>
+		<label for="name"><?php echo LABEL_FULL_NAME; ?></label><?php echo $form->render("name", [ "value" => $user->name ] );?>
+		<label for="email"><?php echo LABEL_EMAIL_ADDRESS; ?></label><?php echo $form->render("email", [ "value" => $user->email ] );?>
+		<label for="username" ><?php echo LABEL_USERNAME; ?></label><?php echo $form->render("username", [ "value" => $user->username ] );?>
+		<div class="checkbox">
+			<label><input type="checkbox" id="is_active" name="is_active" value="1" <?php echo ( $user->is_active ) ? 'checked' : ''; ?>> <?php echo LABEL_ACTIVE; ?></label>
+		</div>
+	</fieldset>
+
+	<button class="btn btn-lg btn-primary btn-block" type="submit"><?php echo LABEL_SAVE; ?></button>
+</form>
+<div class="modal fade" id="confirm-delete" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header-warning">
+                <h4><?php echo LABEL_PLEASE_CONFIRM_REQUESTED_ACTION; ?></h4>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal"><?php echo LABEL_CANCEL; ?></button>
+                <a class="btn btn-danger btn-ok"><?php echo LABEL_DELETE_USER; ?></a>
+            </div>
+        </div>
+    </div>
+</div>
+<?php
+// view scripts
+echo $this->assets->outputJs( 'confirmDeleteJs' );
+?>

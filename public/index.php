@@ -13,9 +13,10 @@ use Phalcon\Mvc\Application;
 use Phalcon\Config\Adapter\Ini as ConfigIni;
 
 try {
-	
-	define('CONFIG_PATH', '../../_private/config/');
-	define('APP_PATH', realpath('..') . '/');
+	$home_url = ( $_SERVER['HTTP_HOST'] ) ? $_SERVER['HTTP_HOST'] : $_SERVER['SERVER_NAME'];
+	define( 'HOME_PATH', $home_url );
+	define( 'CONFIG_PATH', '../../_private/config/' );
+	define( 'APP_PATH', realpath('..') . '/' );
 	/**
 	 * Read the configuration
 	 */

@@ -1,0 +1,18 @@
+<?php
+/**
+ * Package CMS
+ * Syntax Phalcon 2.0
+ * Owner: system-work.com
+ * Author: Sebastian Rzeszowicz
+ * Date: 5/5/2015
+ *
+ * Segment: View
+ * Object: Error
+ * Elements: 404
+*/
+?>
+<div class="jumbotron">
+	<h1><?php echo LABEL_PAGE_NOT_FOUND; ?></h1>
+	<p><?php echo LABEL_SORRY . ', ' . LABEL_NO_ACCESS_OR_EXIST; ?></p>
+	<p><?php echo $this->tag->linkTo( [ "index", LABEL_HOME, "class"=> "btn btn-primary" ] ); ?></p>
+</div>

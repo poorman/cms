@@ -1,0 +1,30 @@
+<?php
+/**
+ * Package CMS
+ * Syntax Phalcon 2.0
+ * Owner: system-work.com
+ * Author: Sebastian Rzeszowicz * Date: 5/5/2015
+ *
+ * Segment: View
+ * Object: Session
+ * Elements: End Login
+*/
+
+echo $this->assets->outputCss( 'preloadersCss' );
+?>
+<script>
+setTimeout(function(){
+	$(".loader").fadeOut(500);
+	setTimeout(function(){window.location.replace("<?php echo HOME_PATH;?>")},800);
+}, 1500);
+
+</script>
+<div class="processing galaxy">
+	<ul class="loader">
+		<li></li>
+		<li></li>
+		<li></li>
+		<li></li>
+	</ul>
+	<div id="clear_content" style="display:none;"></div> 
+</div>

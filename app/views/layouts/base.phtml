@@ -1,5 +1,6 @@
 <?php
-/* * Package CMS
+/**
+ * Package CMS
  * Syntax Phalcon 2.0
  * Owner: system-work.com
  * Author: Sebastian Rzeszowicz
@@ -53,11 +54,35 @@
 	</nav>
 <?php // Page content ?>
 	<div class="container">
-		
-<?php
+
+<?php // not authorized visitors get login form only
+if ( !empty($Oauth['role']) && $Oauth['role'] == ROLE_GUEST ) { 
+
+	// apply form styles
+	echo $this->assets->outputCss( 'userFormCss' ); ?>
+
+<?php 
+	// Login form
+	// Username
+	// Email address
+?>
+		<form action="/session/start" role="form" method="post" class="form-login">
+			<h2 class="form-login-heading"><?php echo LABEL_PLEASE_SIGNIN; ?></h2>
+			<fieldset>
+				<?php echo $form->render("email");?>
+				<?php echo $form->render("password");?>
+			</fieldset>
+
+			<button class="btn btn-lg btn-primary btn-block" type="submit"><?php echo LABEL_SIGNIN; ?></button>
+		</form>
+<?php 
+} 
+else {
+// all authorized visitors get user interface -->
 	echo $this->flash->output();
 	echo $this->getContent();
-?>
+	echo '<hr/>';
+} ?>
 
 		<footer>
 			<p>&copy; <?php echo LABEL_APP_COPYRIGHT;?></p>

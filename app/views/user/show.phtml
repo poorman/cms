@@ -1,0 +1,42 @@
+<?php
+/**
+ * Package CMS
+ * Syntax Phalcon 2.0
+ * Owner: system-work.com
+ * Author: Sebastian Rzeszowicz * Date: 5/5/2015
+ *
+ * Segment: View
+ * Object: Users
+ * Elements: show user data
+*/
+// view styles
+echo $this->assets->outputCss( 'userFormCss' );
+
+// Pager 
+?>
+<ul class="pager">
+	<li class="previous pull-left">
+		<a href="/user/index" >&larr; <?php echo LABEL_USER_LIST; ?></a>
+	</li>
+</ul>
+
+<?php
+
+// Readonly user data view form
+// Name
+// Email
+// User
+?>
+<form action="/session/start" role="form" method="post" class="form-login">
+
+	<h2 class="form-login-heading"><?php echo LABEL_USER_SETTINGS; ?></h2>
+
+	<p><label for="role" ><?php echo LABEL_ROLE; ?>: </label><?php echo array_search($user->role, $access);?></p>
+
+	<fieldset>
+		<label for="name"><?php echo LABEL_FULL_NAME; ?></label><?php echo $form->render("name", [ "value" => $user->name, "readonly" =>1 ] );?>
+		<label for="email"><?php echo LABEL_EMAIL_ADDRESS; ?></label><?php echo $form->render("email", [ "value" => $user->email, "readonly" =>1 ] );?>
+		<label for="username" ><?php echo LABEL_USERNAME; ?></label><?php echo $form->render("username", [ "value" => $user->username, "readonly" =>1 ] );?>
+	</fieldset>
+
+</form>

@@ -1,0 +1,29 @@
+<?php
+/**
+ * Package CMS
+ * Syntax Phalcon 2.0
+ * Owner: system-work.com
+ * Author: Sebastian Rzeszowicz
+ * Date: 5/5/2015
+ *
+ * Segment: View
+ * Object: Session
+ * Elements: Login Start
+*/
+
+// view styles
+echo $this->assets->outputCss( 'userFormCss' );
+
+// Login form
+// Username
+// Email address
+?>
+<form action="/session/start" role="form" method="post" class="form-login">
+
+	<h2 class="form-login-heading"><?php echo LABEL_PLEASE_SIGNIN; ?></h2>
+	<fieldset>
+		<?php echo $form->render( "email" ); ?>
+		<?php echo $form->render( "password" ); ?>
+	</fieldset>
+	<button class="btn btn-lg btn-primary btn-block" type="submit"><?php echo LABEL_SIGNIN; ?></button>
+</form>

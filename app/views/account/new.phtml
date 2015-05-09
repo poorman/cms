@@ -1,0 +1,52 @@
+<?php
+/**
+ * Package CMS
+ * Syntax Phalcon 2.0
+ * Owner: system-work.com
+ * Author: Sebastian Rzeszowicz
+ * Date: 5/5/2015
+ *
+ * Segment: View
+ * Object: Account
+ * Elements: new
+*/
+
+// view styles
+echo $this->assets->outputCss( 'userFormCss' );
+
+//Pager ?>
+
+<ul class="pager">
+	<li class="previous pull-left">
+		<?php if ($redirect) { // when coming from other controller than accountss ?>
+			<a href="/<?php echo $redirect?>/index" >&larr; <?php echo ucfirst( $redirect ) . ' ' . LABEL_LIST ?> </a></li>
+		<?php } 
+		else { ?>
+			<a href="/account/index" >&larr; <?php echo LABEL_ACCOUNT_LIST; ?></a></li>
+		<?php } ?>
+</ul>
+<?php 
+	// New Account form
+	// Account Name
+	// Account Email address
+	// Account group
+	// Account parent
+	// form redirect value
+	// Activation checkbox
+?>
+	<form action="/account/save" role="form" method="post" class="form-login">
+
+		<h2 class="form-login-heading"><?php echo LABEL_NEW_ACCOUNT_FORM; ?></h2>
+
+		<fieldset>
+			<?php echo $form->render( "name" );?>			
+			<?php echo $form->render( "account_group_id" );?>
+			<?php echo $form->render( "parent_id" );?>
+			<?php if ($redirect) { echo $form->render( "redirect" ); } ?>
+			<div class="checkbox">
+				<label><input type="checkbox" id="active" name="active" value="1"> <?php echo LABEL_ACTIVE_ACCOUNT; ?></label>
+			</div>
+		</fieldset>
+		<br />
+		<button class="btn btn-lg btn-primary btn-block" type="submit"><?php echo LABEL_SAVE; ?></button>
+	</form>

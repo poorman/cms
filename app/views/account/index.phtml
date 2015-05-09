@@ -1,0 +1,105 @@
+<?php
+/**
+ * Package CMS
+ * Syntax Phalcon 2.0
+ * Owner: system-work.com
+ * Author: Sebastian Rzeszowicz
+ * Date: 5/5/2015
+ *
+ * Segment: View
+ * Object: Account
+ * Elements: index
+*/
+
+// view styles
+echo $this->assets->outputCss( 'tablesCss' );
+
+// Pager ?>
+	<ul class="pager">
+		<li class="pull-right">
+			<a href="/account/new/<?php echo $account_group_id; ?>" ><?php echo LABEL_NEW_ACCOUNT; ?></a>
+		</li>
+	</ul>
+<?php // Heading ?>
+	<h2 class="sub-header"><?php echo LABEL_ACCOUNT_LIST; ?></h2>
+<?php //Table - mostly header row ?>
+	<div class="table-responsive">
+		<table class="table table-striped">
+		<thead>
+			<tr>
+				<th><?php echo LABEL_IDENTIFICATION_ID; ?></th>
+				<th><?php echo LABEL_ACCOUNT_NAME; ?></th>
+				<th><?php echo LABEL_ACTIVE_ACCOUNT; ?></th>
+				<th><?php echo LABEL_CREATED_DATE; ?></th>
+				<th><?php echo LABEL_LATEST_UPDATE; ?></th>
+<?php			if ( $access[ $role ] >= $access[ ROLE_ADMIN ] ) { ?><th colspan="3"></th><?php } ?>
+			</tr>
+		</thead>
+		<tbody>
+<?php
+	// Rest of table rows
+	foreach ( $accounts as $account ) { //start row
+		
+		// Minimum account group or same account users can see this row, and it is already limited by sql query
+
+		$c_date = strtotime( $account->created );
+		$c_date = date( 'd F Y', $c_date );
+		if ( !empty( $account->updated) ) {
+			$u_date = strtotime( $account->updated );
+			$u_date = date( 'd F Y', $u_date );
+		}
+		else {
+			$u_date = 'n/a';
+		}
+?>
+			<tr>
+				<td><?php echo $account->id;?></td>
+				<td><?php echo $account->name;?></td>
+				<td><?php echo ($account->is_active) ? "Yes" : "No";?></td>
+				<td class="non-wraped"><?php echo $c_date;?></td>
+				<td class="non-wraped"><?php echo $u_date;?></td>
+<?php
+		
+		// editing option available for minimum admin permission and higher permission than current user
+		if ( $access[ $role ] >= $access[ ROLE_ADMIN ] ) { ?>
+				<th><a href="/account/edit/<?php echo $account->id;?>" class="btn btn-primary"><i class="glyphicon glyphicon-edit"></i> <?php echo LABEL_EDIT; ?></a></th>
+				<th>
+<?php	if ( $access[ $role ] > $access[ ROLE_ADMIN ] ) { ?>
+				<button class="btn btn-danger" data-href="/account/delete/<?php echo $account->id;?>" data-toggle="modal" data-target="#confirm-delete">
+					<i class="glyphicon glyphicon-remove"></i> <?php echo LABEL_DELETE; ?>
+				</button>
+<?php 	}	?>
+				</th>
+<?php	}
+	} // End Row ?>
+				</tr>
+			</tbody>
+			</table>
+            
+            
+<?php // Display menu tabs
+//echo $this->pagination->getPagination($pagination);
+?>
+		</div>
+	
+<?php 
+if ( $access[ $role ] > $access[ ROLE_ADMIN ] ) {
+//confirm delete modal ?>
+<div class="modal fade" id="confirm-delete" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header-warning">
+                <h4><?php echo LABEL_PLEASE_CONFIRM_REQUESTED_ACTION; ?></h4>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal"><?php echo LABEL_CANCEL; ?></button>
+                <a class="btn btn-danger btn-ok"><?php echo LABEL_DELETE_ACCOUNT; ?></a>
+            </div>
+        </div>
+    </div>
+</div>
+<?php
+// view scripts
+	echo $this->assets->outputJs( 'confirmDeleteJs' );
+}
+?>

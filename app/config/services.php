@@ -1,9 +1,10 @@
 <?php
 /*
  * Package CMS
+ * Syntax Phalcon 2.0
  * Owner: system-work.com 
  * Author: Sebastian Rzeszowicz
- * Date: 2015
+ * Date: 5/5/2015
  *
  * Segment: Global
  * Object: Services
@@ -27,11 +28,21 @@ use Phalcon\Mvc\Router;
 $di = new Phalcon\DI\FactoryDefault();
 
 /**
- * Register the events manager
+ * We register the events manager
  */
 $di->set( 'dispatcher', function() use ( $di ) {
 
 	$eventsManager = new EventsManager;
+
+	/**
+	 * Check if the user is allowed to access certain action using the SecurityPlugin
+	 */
+	$eventsManager->attach( 'dispatch:beforeDispatch', new SecurityPlugin );
+
+	/**
+	 * Handle exceptions and not-found exceptions using NotFoundPlugin
+	 */
+	$eventsManager->attach( 'dispatch:beforeException', new NotFoundPlugin );
 
 	$dispatcher = new Dispatcher;
 	$dispatcher->setEventsManager( $eventsManager );
@@ -39,26 +50,26 @@ $di->set( 'dispatcher', function() use ( $di ) {
 });
 
 /**
- * Database connection
+ *Database connection
  */
-$di->set('db', function() use ($config) {
-    return new DbConn(array(
+$di->set( 'db', function() use ($config) {
+    return new DbConn( [
         "host"		=> $config->database->host,
         "username"	=> $config->database->username,
         "password"	=> $config->database->password,
         "dbname"	=> $config->database->name
-    ));
+    ] );
 });
 
 /**
  * Register the flash service with custom CSS classes
  */
 $di->set( 'flash', function() {
-	return new FlashSession( array(
+	return new FlashSession( [
 		'error'		=> 'alert alert-danger',
 		'success'	=> 'alert alert-success',
 		'notice'	=> 'alert alert-info',
-	) );
+	] );
 });
 
 /**
@@ -73,7 +84,7 @@ return $session;
 //Setup a base URI so that all generated URIs include the "tutorial" folder
 $di->set( 'url', function() {
 	$url = new UrlProvider();
-	$url->setBaseUri('/');
+	$url->setBaseUri( '/' );
 	return $url;
 });
 
@@ -91,7 +102,7 @@ $di->set( 'modelsManager', function() {
 /**
  * Setup the view component
  */
-$di->set ('view', function() use ( $config ){
+$di->set ( 'view', function() use ( $config ){
 	$view = new View();
 	$view->setViewsDir( APP_PATH . $config->application->viewsDir );
 	return $view;

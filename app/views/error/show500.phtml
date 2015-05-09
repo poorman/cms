@@ -1,0 +1,18 @@
+<?php
+/**
+ * Package CMS
+ * Syntax Phalcon 2.0
+ * Owner: system-work.com
+ * Author: Sebastian Rzeszowicz
+ * Date: 5/5/2015
+ *
+ * Segment: View
+ * Object: Error
+ * Elements: 500
+*/
+?>
+<div class="jumbotron">
+	<h1><?php echo LABEL_INTERNAL_ERROR; ?></h1>
+	<p><?php echo LABEL_SOMETHING_WENT_WRONG . ',' . LABEL_ERROR_CONTINUE_CONTACT_US;?></p>
+	<p><?php echo $this->tag->linkTo( [ "index", LABEL_HOME, "class"=> "btn btn-primary" ] ); ?></p>
+</div>

@@ -1,5 +1,6 @@
 <?php
-/* * Package CMS
+/**
+ * Package CMS
  * Syntax Phalcon 2.0
  * Owner: system-work.com
  * Author: Sebastian Rzeszowicz
@@ -39,6 +40,14 @@ class IndexController extends BaseController
 	 **/
 	public function indexAction()
 	{
-
+		// just pass it this way here
+		$this->view->Oauth = $this->Oauth;
+		
+		if ( $this->Oauth[ 'role' ] == ROLE_GUEST ) {
+			$form = new UserForms;
+			$this->view->setVars( [ "form" => $form ] );
+			$this->assets->collection( 'userFormCss' )
+			->addCss( 'css/userForms.css' );
+		}
 	}
 }

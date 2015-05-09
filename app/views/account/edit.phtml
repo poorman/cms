@@ -1,0 +1,57 @@
+<?php
+/**
+ * Package CMS
+ * Syntax Phalcon 2.0
+ * Owner: system-work.com
+ * Author: Sebastian Rzeszowicz
+ * Date: 5/5/2015
+ *
+ * Segment: View
+ * Object: Account
+ * Elements: Edit
+*/
+
+// view styles
+ echo $this->assets->outputCss( 'userFormCss' );
+
+// Pager ?>
+<ul class="pager">
+<?php if ( $access[ $role ] >= $access[ ROLE_GROUP_ADMIN ] ) { ?>	
+	<li class="previous pull-left">
+		<a href="/account/index" >&larr; <?php echo LABEL_ACCOUNT_LIST; ?></a>
+	</li>
+<?php
+}
+	//Account delete button
+	//only manager and higher level user from same account can delete user
+if ( $access[ $role ] == ROLE_GROUP_ADMIN ) { ?>
+	<li class="btn btn-danger pull-right">
+		<a href="/account/delete/<?php echo $account->id; ?>" ><?php echo LABEL_DELETE_ACCOUNT; ?></a>
+	</li>
+<?php
+}
+?>
+</ul>
+<?php 
+// Menu tabs
+	echo $this->menus->getTabs( 'account', $account_id) 
+
+	// Account edit form
+	// Account name
+	// Email address
+	// Activation checkbox
+?>
+<form action="/account/save/<?php echo $account->id;?>" role="form" method="post" class="form-login">
+
+	<h2 class="form-login-heading"><?php echo LABEL_ACCOUNT_SETTINGS; ?></h2>
+
+	<fieldset>
+		<label for="name"><?php echo LABEL_ACCOUNT_NAME; ?></label><?php echo $form->render( "name", [ "value" => $account->name ] );?>
+		<div class="checkbox">
+			<label><input type="checkbox" id="flag_active" name="active" name="active" value="1" <?php echo ( $account->is_active ) ? 'checked' : ''; ?>> <?php echo LABEL_ACTIVE ?></label>
+		</div>
+	</fieldset>
+
+	<button class="btn btn-lg btn-primary btn-block" type="submit"><?php echo LABEL_SAVE ?></button>
+
+</form>

@@ -1,0 +1,195 @@
+<?php
+/**
+ * Package CMS
+ * Syntax Phalcon 2.0
+ * Owner: system-work.com
+ * Author: Sebastian Rzeszowicz * Date: 5/5/2015
+ *
+ * Segment: View
+ * Object: Users
+ * Elements: index
+*/
+
+if (!empty($user) ) { // This is single user interface / loads for ACL 'User' ?>
+<?php
+// view styles
+echo $this->assets->outputCss( 'userFormCss' );?>
+<?php if ($access[ $role ] >= $access[ ROLE_ADMIN ]) { ?>
+<ul class="pager">
+	<li class="pull-left">
+	<a href="/user/index" >&larr; <?php echo LABEL_USER_LIST; ?></a>
+	</li>
+</ul>
+<?php } 
+// Menu tabs
+echo $this->menus->getTabs( 'user', $user->id) 
+// User edit form
+// User role
+// Full name
+// Email address
+// Username
+// Activation checkbox
+?>
+	<form action="<?php echo $action; ?>" role="form" method="post" class="form-login">
+		<h2 class="form-login-heading"><?php echo LABEL_MY_SETTINGS; ?></h2>
+		<p><label for="role" ><?php echo LABEL_ROLE; ?>: </label><?php echo array_search($user->role, $access);?></p>
+		<input type="hidden" id="userRole" name="userRole" value="<?php echo $user->role; ?>" />
+		<fieldset>
+			<label for="name"><?php echo LABEL_FULL_NAME ; ?></label><?php echo $form->render("name", [ "value" => $user->name ] );?>
+			<label for="email"><?php echo LABEL_EMAIL_ADDRESS; ?></label><?php echo $form->render("email", [ "value" => $user->email ] );?>
+			<label for="username" ><?php echo LABEL_USERNAME; ?></label><?php echo $form->render("username", [ "value" => $user->username ] );?>
+		</fieldset>
+		<br />
+		<button class="btn btn-lg btn-primary btn-block" type="submit"><?php echo LABEL_SAVE; ?></button>
+	</form>
+
+<?php
+}
+else if (!empty($users) ) { // This is multi user interface / loads for administrative permissions--> ?>
+<?php
+	// view styles
+	echo $this->assets->outputCss( 'tablesCss' );
+
+	//Pager ?>
+	<ul class="pager">
+		<li class="pull-left">
+			<a href="/user/index/<?php echo $id; ?>" ><?php echo LABEL_MY_SETTINGS; ?></a>
+		</li>
+		<li class="pull-right">
+			<a href="/user/new/<?php echo $id; ?>" ><?php echo LABEL_CREATE_USER; ?></a>
+		</li>
+	</ul>
+<?php //Heading ?>
+	<h2 class="sub-header"><?php echo LABEL_USER_LIST; ?></h2>
+<?php // User list table heading ?>
+	<div class="table-responsive">
+		<table class="table table-striped">
+		<thead>
+			<tr>
+				<th><?php echo LABEL_IDENTIFICATION_ID; ?></th>
+				<th><?php echo LABEL_ACCOUNT; ?></th>
+				<th><?php echo LABEL_ROLE; ?></th>
+				<th><?php echo LABEL_NAME; ?></th>
+				<th><?php echo LABEL_EMAIL; ?></th>
+				<th><?php echo LABEL_USERNAME; ?></th>
+				<th><?php echo LABEL_ACTIVE; ?></th>
+				<th><?php echo LABEL_CREATED_DATE; ?></th>
+				<th><?php echo LABEL_LATEST_UPDATE; ?></th>
+				<th colspan="3"></th>
+			</tr>
+		</thead>
+		<tbody>
+<?php
+	// Rest of user rows
+	foreach ( $users as $user ) { //start row
+		
+		// Minimum account_group or same account users can see this row
+		if ( $access[$role] >= $access[ ROLE_GROUP_ADMIN ] || $account_id == $user->account_id ) {
+
+			if ( $user->role == $access[ ROLE_GROUP_ADMIN ] ) {
+				$user->account_id = LABEL_TOTAL_OF . count( $account_group->find( [ "account_group_id = " . $user->account_group_id . " AND is_active = 1 " ] ) );
+			}
+			else {
+				if ( $user->role < $access[ ROLE_GROUP_ADMIN ] ) {
+					$account = $accounts->findFirst( $user->account_id );
+					$user->account_id = $account->id;
+				}
+			}
+
+
+
+
+
+
+
+
+
+
+			$c_date = strtotime( $user->created );
+			$c_date = date( 'd F Y', $c_date );
+			$u_date = strtotime( $user->updated );
+			$u_date = date( 'd F Y', $u_date );
+?>
+			<tr>
+				<td><?php echo $user->id;?></td>
+				<td><?php echo $user->account_id;?></td>
+				<td><?php echo array_search( $user->role, $access );?></td>
+				<td><?php echo $user->name;?></td>
+				<td><?php echo $user->email;?></td>
+				<td><?php echo $user->username;?></td>
+				<td><?php echo ( $user->is_active ) ? "Yes" : "No";?></td>
+				<td class="non-wraped"><?php echo $c_date;?></td>
+				<td class="non-wraped"><?php echo $u_date;?></td>
+
+<?php
+			// this editing option available for minimum admin permission and higher permission than current user
+			if ( $access[ $role ] >= $access[ ROLE_ADMIN ] && $access[ $role ] > $user->role || $user->parent_id == $id ) { ?>
+				<th><a href="/user/edit/<?php echo $user->id;?>" class="btn btn-primary"><i class="glyphicon glyphicon-edit"></i> <?php echo LABEL_EDIT; ?></a></th>
+				<th>
+<?php		// 
+			if ($user->role == $access[ ROLE_GROUP_ADMIN ]) { //account_groups get migration message ?>
+				<button class="btn btn-danger" data-href="/user/delete/<?php echo $user->id;?>" data-toggle="modal" data-target="#confirm-delete" onclick="modalWarning()">
+						<i class="glyphicon glyphicon-remove"></i> <?php echo LABEL_DELETE; ?>
+					</button>
+<?php		}
+			else { ?>
+					<button class="btn btn-danger" data-href="/user/delete/<?php echo $user->id;?>" data-toggle="modal" data-target="#confirm-delete">
+						<i class="glyphicon glyphicon-remove"></i> <?php echo LABEL_DELETE; ?>
+					</button>
+<?php		} ?>
+				</th>
+<?php
+				// Devs and Managers can create accounts for account_groups
+				if ( $user->role == $access[ ROLE_GROUP_ADMIN ] && $access[ $role ] >= $access[ ROLE_SUPER_ADMIN ] ) { ?>
+					<th><a href="/account/new/<?php echo $user->account_group_id;?>/<?php echo $user->id;?>/users" class="btn btn-warning"><i class="glyphicon glyphicon-remove"></i> <?php echo LABEL_CREATE_ACCOUNT; ?></a>
+					</th>
+<?php
+				}
+				else {
+				// Non Devs and account_groups ?>
+					<th></th>
+<?php
+				}
+			} 
+			else {
+				// Same level permissions but different users can only view
+				if ( $id != $user->id) { ?>
+					<th colspan="3" ><a href="/user/show/<?php echo $user->id;?>" class="btn btn-info"><i class="glyphicon glyphicon-search"></i> <?php echo LABEL_SHOW_DETAILS; ?></a></th>
+<?php			}
+				else { 
+					// This is own account ?>
+					<th colspan="3" ><a href="/user/index/<?php echo $user->id;?>" class="btn btn-success"><i class="glyphicon glyphicon-edit"></i> <?php echo LABEL_MY_SETTINGS; ?></a></th>
+<?php			} 
+			}
+		}
+	} // End Row ?>
+				</tr>
+			  </tbody>
+			</table>
+	</div>
+<?php }
+//confirm delete modal ?>
+<div class="modal fade" id="confirm-delete" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header-warning">
+				<h4><?php echo LABEL_PLEASE_CONFIRM_REQUESTED_ACTION; ?></h4>
+			</div>
+			<div id="migration-warning" style="display:none; text-align:center; padding:10px;">
+				<?php 
+				echo "<p>" . MSG_MIGRATION_WARNING_LINE1 . " <br>" . MSG_MIGRATION_WARNING_LINE2 . "<p>";
+				echo "<p>" . MSG_MIGRATION_WARNING_LINE3 . " <br>" . MSG_MIGRATION_WARNING_LINE4 . "<p>" ?>
+			</div>
+			<div class="modal-footer">
+				<a class="btn btn-primary btn-ok pull-left" id="migration-button" style="display:none;"><?php echo LABEL_MIGRATION_TOOL; ?></a>
+				<button type="button" class="btn btn-default" data-dismiss="modal"><?php echo LABEL_CANCEL; ?></button>
+				<a class="btn btn-danger btn-ok"><?php echo LABEL_DELETE_USER; ?></a>
+			</div>
+		</div>
+	</div>
+</div>
+
+<?php
+// view scripts
+echo $this->assets->outputJs( 'confirmDeleteJs' );
+?>

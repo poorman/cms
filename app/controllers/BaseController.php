@@ -18,6 +18,15 @@ use \Phalcon\Assets\Filters\Jsmin;
  */	
 class BaseController extends \Phalcon\Mvc\Controller
 {
+	// basic global collection of user data and permissions
+	public $Oauth;
+
+	// basic global collection of permissions
+	public $access = [ ROLE_GUEST => 0, ROLE_MEMBER => 1, ROLE_ADMIN => 2, ROLE_GROUP_ADMIN => 3, ROLE_SUPER_ADMIN => 4, ROLE_DEVELOPER => 5 ];
+
+	// global default pagination limit
+	public $limit = 30;
+	
 	/**
 	 * Initialize objects global settings
 	 *
@@ -50,6 +59,9 @@ class BaseController extends \Phalcon\Mvc\Controller
 					->setTargetUri( 'cache/js/production.js' )
 					->join( true )
 					->addFilter( new Jsmin() );
+			
+		// Set global session authorization data
+		$this->Oauth = $this->session->get( 'Oauth' );
 	}
 
 	/**
@@ -64,11 +76,11 @@ class BaseController extends \Phalcon\Mvc\Controller
 		$uriParts = explode( '/', $uri );
 		$params = array_slice( $uriParts, 2 );
 		return $this->dispatcher->forward(
-			array(
+			[
 				'controller' => $uriParts[ 0 ],
 				'action' => $uriParts[ 1 ],
 				'params' => $params
-			)
+			]
 		);
 	}
 }
