@@ -17,6 +17,7 @@ try {
 	define( 'HOME_PATH', $home_url );
 	define( 'CONFIG_PATH', '../../_private/config/' );
 	define( 'APP_PATH', realpath('..') . '/' );
+	define( 'APP_CONFIG_PATH', APP_PATH . 'app/config/' );
 	/**
 	 * Read the configuration
 	 */
@@ -25,8 +26,8 @@ try {
 	/**
 	 * Read constant variables
 	 */
-	$constant = new ConfigIni(CONFIG_PATH . 'constants.ini');
-	
+	$constant = new ConfigIni(APP_CONFIG_PATH . 'constants.ini');
+
 	/**
 	 * Auto-loader configuration
 	 */
